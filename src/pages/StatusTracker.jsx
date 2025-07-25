@@ -24,9 +24,9 @@ const StatusTracker = () => {
 
   // Моковые данные для демонстрации
   const mockApplication = {
-    id: 'APP-2024-001',
+    id: 'APP-2025-001',
     status: 'approved', // pending, approved, rejected, processing
-    submittedDate: '2024-01-15',
+    submittedDate: '2025-01-15',
     company: 'Київводоканал',
     clientName: 'Іванов Іван Іванович',
     debtAmount: 15000,
@@ -34,8 +34,8 @@ const StatusTracker = () => {
     repaymentPeriod: 12,
     phone: '+380 44 123 45 67',
     email: 'ivanov@example.com',
-    contractNumber: 'Р-20240115001',
-    lastUpdate: '2024-01-20',
+    contractNumber: 'Р-20250115001',
+    lastUpdate: '2025-01-20',
     comments: 'Договір затверджено. Очікується підписання з боку підприємства.'
   }
 
@@ -133,7 +133,7 @@ const StatusTracker = () => {
                 type="text"
                 value={searchNumber}
                 onChange={(e) => setSearchNumber(e.target.value)}
-                placeholder="Введіть номер заявки (наприклад: APP-2024-001)"
+                placeholder="Введіть номер заявки (наприклад: APP-2025-001)"
                 className="input-field flex-1"
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
@@ -262,7 +262,7 @@ const StatusTracker = () => {
                       <div className="w-3 h-3 bg-primary-600 rounded-full"></div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-secondary-900">На розгляді</p>
-                        <p className="text-xs text-secondary-500">2024-01-16</p>
+                        <p className="text-xs text-secondary-500">2025-01-16</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
@@ -342,11 +342,11 @@ const StatusTracker = () => {
                 Демонстраційний режим
               </h3>
               <p className="text-secondary-600 mb-4">
-                Для демонстрації функціоналу введіть номер заявки: <strong>APP-2024-001</strong>
+                Для демонстрації функціоналу введіть номер заявки: <strong>APP-2025-001</strong>
               </p>
               <button
                 onClick={() => {
-                  setSearchNumber('APP-2024-001')
+                  setSearchNumber('APP-2025-001')
                   handleSearch()
                 }}
                 className="btn-primary"

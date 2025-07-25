@@ -39,8 +39,8 @@ const PersonalCabinet = () => {
       debtAmount: 15000,
       monthlyPayment: 2500,
       status: 'pending',
-      date: '2024-01-15',
-      contractNumber: 'Д-2024-001'
+      date: '2025-01-15',
+      contractNumber: 'Д-2025-001'
     },
     {
       id: '002',
@@ -48,8 +48,8 @@ const PersonalCabinet = () => {
       debtAmount: 8500,
       monthlyPayment: 1500,
       status: 'approved',
-      date: '2024-01-10',
-      contractNumber: 'Д-2024-002'
+      date: '2025-01-10',
+      contractNumber: 'Д-2025-002'
     },
     {
       id: '003',
@@ -57,8 +57,8 @@ const PersonalCabinet = () => {
       debtAmount: 3200,
       monthlyPayment: 800,
       status: 'rejected',
-      date: '2024-01-05',
-      contractNumber: 'Д-2024-003'
+      date: '2025-01-05',
+      contractNumber: 'Д-2025-003'
     }
   ]
 
