@@ -18,7 +18,7 @@ import {
   CheckCircle
 } from 'lucide-react'
 
-const ApplicationForm = () => {
+const ApplicationForm = ({ darkMode }) => {
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedCompany, setSelectedCompany] = useState('')
   const [isCompanyDropdownOpen, setIsCompanyDropdownOpen] = useState(false)
@@ -106,68 +106,86 @@ const ApplicationForm = () => {
   }
 
   return (
-    <div className="min-h-screen py-12">
+    <div className={`min-h-screen py-12 transition-colors duration-300 ${
+      darkMode ? 'bg-gray-900' : 'bg-gray-50'
+    }`}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
-            Заявка на реструктуризацію
+          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 ${
+            darkMode ? 'bg-primary-900' : 'bg-primary-100'
+          }`}>
+            <FileText className="w-8 h-8 text-primary-600" />
+          </div>
+          <h1 className={`text-4xl font-bold mb-4 ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}>
+            Подача заявки
           </h1>
-          <p className="text-lg text-secondary-600">
-            Заповніть форму для подачі заявки на реструктуризацію боргу
+          <p className={`text-lg ${
+            darkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
+            Заповніть форму для реструктуризації боргу за комунальні послуги
           </p>
         </motion.div>
 
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => {
-              const Icon = step.icon
-              const isActive = currentStep === step.number
-              const isCompleted = currentStep > step.number
-              
-              return (
-                <div key={step.number} className="flex items-center">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-200 ${
-                    isActive 
-                      ? 'bg-primary-600 border-primary-600 text-white' 
-                      : isCompleted 
-                        ? 'bg-success-600 border-success-600 text-white'
-                        : 'bg-white border-secondary-300 text-secondary-400'
-                  }`}>
-                    {isCompleted ? (
-                      <CheckCircle size={20} />
-                    ) : (
-                      <Icon size={20} />
-                    )}
-                  </div>
-                  <div className="ml-3">
-                    <p className={`text-sm font-medium ${
-                      isActive ? 'text-primary-600' : 'text-secondary-500'
-                    }`}>
-                      {step.title}
-                    </p>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className={`w-16 h-0.5 mx-4 ${
-                      isCompleted ? 'bg-success-600' : 'bg-secondary-300'
-                    }`} />
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Form */}
-        <motion.div
+        <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="card"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className={`p-6 rounded-2xl shadow-soft mb-8 ${
+            darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            {steps.map((step, index) => (
+              <div key={step.number} className="flex items-center">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
+                  currentStep >= step.number
+                    ? 'bg-primary-600 border-primary-600 text-white'
+                    : `${darkMode ? 'border-gray-600 text-gray-400' : 'border-gray-300 text-gray-500'}`
+                }`}>
+                  {currentStep > step.number ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    <step.icon className="w-5 h-5" />
+                  )}
+                </div>
+                <div className={`ml-3 ${currentStep >= step.number ? 'block' : 'hidden md:block'}`}>
+                  <div className={`text-sm font-medium ${
+                    currentStep >= step.number
+                      ? darkMode ? 'text-white' : 'text-gray-900'
+                      : darkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    {step.title}
+                  </div>
+                </div>
+                {index < steps.length - 1 && (
+                  <div className={`hidden md:block w-16 h-0.5 mx-4 ${
+                    currentStep > step.number
+                      ? 'bg-primary-600'
+                      : darkMode ? 'bg-gray-600' : 'bg-gray-300'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Form */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className={`p-8 rounded-2xl shadow-soft ${
+            darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+          }`}
         >
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Step 1: Company Selection */}
@@ -175,111 +193,179 @@ const ApplicationForm = () => {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="space-y-6"
+                transition={{ duration: 0.5 }}
               >
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Виберіть комунальне підприємство
+                <h2 className={`text-2xl font-semibold mb-6 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Виберіть комунальне підприємство
+                </h2>
+                
+                <div className="relative">
+                  <label className={`block text-sm font-medium mb-2 ${
+                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    Комунальне підприємство *
                   </label>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setIsCompanyDropdownOpen(!isCompanyDropdownOpen)}
-                      className="w-full input-field flex items-center justify-between"
-                    >
-                      <span className={selectedCompany ? 'text-secondary-900' : 'text-secondary-500'}>
-                        {selectedCompanyData ? selectedCompanyData.name : 'Оберіть підприємство'}
-                      </span>
-                      <ChevronDown size={20} className="text-secondary-400" />
-                    </button>
-                    
-                    {isCompanyDropdownOpen && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-secondary-300 rounded-lg shadow-lg max-h-60 overflow-auto">
-                        {companies.map((company) => (
-                          <button
-                            key={company.id}
-                            type="button"
-                            onClick={() => handleCompanySelect(company.id)}
-                            className="w-full px-4 py-3 text-left hover:bg-secondary-50 border-b border-secondary-100 last:border-b-0"
-                          >
-                            <div className="font-medium text-secondary-900">{company.name}</div>
-                            <div className="text-sm text-secondary-500">{company.city}</div>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  {errors.company && (
-                    <p className="mt-1 text-sm text-red-600">{errors.company.message}</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsCompanyDropdownOpen(!isCompanyDropdownOpen)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors flex items-center justify-between ${
+                      darkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                        : 'bg-white border-gray-300 text-gray-900'
+                    }`}
+                    style={{
+                      WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                      WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                    }}
+                  >
+                    <span className={selectedCompany ? '' : darkMode ? 'text-gray-400' : 'text-gray-500'}>
+                      {selectedCompany ? selectedCompanyData?.name : 'Оберіть підприємство'}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 transition-transform ${
+                      isCompanyDropdownOpen ? 'rotate-180' : ''
+                    }`} />
+                  </button>
+                  
+                  {isCompanyDropdownOpen && (
+                    <div className={`absolute z-10 w-full mt-1 border rounded-lg shadow-lg ${
+                      darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                    }`}>
+                      {companies.map((company) => (
+                        <button
+                          key={company.id}
+                          type="button"
+                          onClick={() => handleCompanySelect(company.id)}
+                          className={`w-full px-4 py-3 text-left hover:bg-primary-50 transition-colors ${
+                            darkMode 
+                              ? 'text-white hover:bg-primary-900/20' 
+                              : 'text-gray-900 hover:bg-primary-50'
+                          }`}
+                        >
+                          <div className="font-medium">{company.name}</div>
+                          <div className={`text-sm ${
+                            darkMode ? 'text-gray-400' : 'text-gray-500'
+                          }`}>
+                            {company.city}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   )}
                 </div>
               </motion.div>
             )}
 
-            {/* Step 2: Personal Information */}
+            {/* Step 2: Personal Data */}
             {currentStep === 2 && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="space-y-6"
+                transition={{ duration: 0.5 }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h2 className={`text-2xl font-semibold mb-6 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Особисті дані
+                </h2>
+                
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-secondary-700 mb-2">
-                      Прізвище
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Прізвище *
                     </label>
                     <input
                       type="text"
                       {...register('lastName', { required: 'Прізвище обов\'язкове' })}
-                      className="input-field"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
                       placeholder="Введіть прізвище"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
                     />
                     {errors.lastName && (
-                      <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+                      <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>
                     )}
                   </div>
+                  
                   <div>
-                    <label className="block text-sm font-medium text-secondary-700 mb-2">
-                      Ім'я
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Ім'я *
                     </label>
                     <input
                       type="text"
                       {...register('firstName', { required: 'Ім\'я обов\'язкове' })}
-                      className="input-field"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
                       placeholder="Введіть ім'я"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
                     />
                     {errors.firstName && (
-                      <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+                      <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>
                     )}
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Адреса
-                  </label>
-                  <input
-                    type="text"
-                    {...register('address', { required: 'Адреса обов\'язкова' })}
-                    className="input-field"
-                    placeholder="Введіть повну адресу"
-                  />
-                  {errors.address && (
-                    <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Номер особового рахунку
-                  </label>
-                  <input
-                    type="text"
-                    {...register('accountNumber', { required: 'Номер рахунку обов\'язковий' })}
-                    className="input-field"
-                    placeholder="Введіть номер особового рахунку"
-                  />
-                  {errors.accountNumber && (
-                    <p className="mt-1 text-sm text-red-600">{errors.accountNumber.message}</p>
-                  )}
+                  
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      По батькові
+                    </label>
+                    <input
+                      type="text"
+                      {...register('middleName')}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
+                      placeholder="Введіть по батькові"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Дата народження *
+                    </label>
+                    <input
+                      type="date"
+                      {...register('birthDate', { required: 'Дата народження обов\'язкова' })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900'
+                      }`}
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    />
+                    {errors.birthDate && (
+                      <p className="text-red-500 text-sm mt-1">{errors.birthDate.message}</p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -289,62 +375,92 @@ const ApplicationForm = () => {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="space-y-6"
+                transition={{ duration: 0.5 }}
               >
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Сума боргу (грн)
-                  </label>
-                  <input
-                    type="number"
-                    {...register('debtAmount', { 
-                      required: 'Сума боргу обов\'язкова',
-                      min: { value: 1, message: 'Сума повинна бути більше 0' }
-                    })}
-                    className="input-field"
-                    placeholder="Введіть суму боргу"
-                  />
-                  {errors.debtAmount && (
-                    <p className="mt-1 text-sm text-red-600">{errors.debtAmount.message}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Термін погашення (місяців)
-                  </label>
-                  <select
-                    {...register('repaymentPeriod', { required: 'Термін погашення обов\'язковий' })}
-                    className="input-field"
-                  >
-                    <option value="">Оберіть термін</option>
-                    <option value="6">6 місяців</option>
-                    <option value="12">12 місяців</option>
-                    <option value="18">18 місяців</option>
-                    <option value="24">24 місяці</option>
-                    <option value="36">36 місяців</option>
-                  </select>
-                  {errors.repaymentPeriod && (
-                    <p className="mt-1 text-sm text-red-600">{errors.repaymentPeriod.message}</p>
-                  )}
-                </div>
-
-                {/* Monthly Payment Calculation */}
-                {monthlyPayment > 0 && (
-                  <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium text-primary-900">Розрахунок щомісячного платежу</h4>
-                        <p className="text-sm text-primary-700">
-                          Сума боргу: {watchedValues.debtAmount} грн / {watchedValues.repaymentPeriod} міс.
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-primary-900">{monthlyPayment} грн</div>
-                        <div className="text-sm text-primary-700">щомісяця</div>
+                <h2 className={`text-2xl font-semibold mb-6 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Інформація про борг
+                </h2>
+                
+                <div className="space-y-6">
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Сума боргу (грн) *
+                    </label>
+                    <input
+                      type="number"
+                      {...register('debtAmount', { 
+                        required: 'Сума боргу обов\'язкова',
+                        min: { value: 1, message: 'Сума повинна бути більше 0' }
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
+                      placeholder="Введіть суму боргу"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    />
+                    {errors.debtAmount && (
+                      <p className="text-red-500 text-sm mt-1">{errors.debtAmount.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Період погашення (місяців) *
+                    </label>
+                    <select
+                      {...register('repaymentPeriod', { required: 'Період погашення обов\'язковий' })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900'
+                      }`}
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    >
+                      <option value="">Оберіть період</option>
+                      <option value="6">6 місяців</option>
+                      <option value="12">12 місяців</option>
+                      <option value="18">18 місяців</option>
+                      <option value="24">24 місяці</option>
+                      <option value="36">36 місяців</option>
+                    </select>
+                    {errors.repaymentPeriod && (
+                      <p className="text-red-500 text-sm mt-1">{errors.repaymentPeriod.message}</p>
+                    )}
+                  </div>
+                  
+                  {monthlyPayment > 0 && (
+                    <div className={`p-4 rounded-lg ${
+                      darkMode ? 'bg-primary-900/20 border border-primary-700' : 'bg-primary-50 border border-primary-200'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <span className={`font-medium ${
+                          darkMode ? 'text-primary-300' : 'text-primary-700'
+                        }`}>
+                          Розрахований щомісячний платіж:
+                        </span>
+                        <span className={`text-2xl font-bold ${
+                          darkMode ? 'text-primary-300' : 'text-primary-700'
+                        }`}>
+                          {monthlyPayment} грн
+                        </span>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </motion.div>
             )}
 
@@ -353,81 +469,137 @@ const ApplicationForm = () => {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="space-y-6"
+                transition={{ duration: 0.5 }}
               >
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Номер телефону
-                  </label>
-                  <input
-                    type="tel"
-                    {...register('phone', { 
-                      required: 'Номер телефону обов\'язковий',
-                      pattern: {
-                        value: /^[\+]?[0-9\s\-\(\)]{10,}$/,
-                        message: 'Введіть коректний номер телефону'
-                      }
-                    })}
-                    className="input-field"
-                    placeholder="+380 XX XXX XX XX"
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Email адреса
-                  </label>
-                  <input
-                    type="email"
-                    {...register('email', { 
-                      required: 'Email обов\'язковий',
-                      pattern: {
-                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'Введіть коректний email'
-                      }
-                    })}
-                    className="input-field"
-                    placeholder="your@email.com"
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-                  )}
+                <h2 className={`text-2xl font-semibold mb-6 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Контактні дані
+                </h2>
+                
+                <div className="space-y-6">
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Номер телефону *
+                    </label>
+                    <input
+                      type="tel"
+                      {...register('phone', { 
+                        required: 'Номер телефону обов\'язковий',
+                        pattern: {
+                          value: /^[\+]?[0-9\s\-\(\)]{10,}$/,
+                          message: 'Введіть коректний номер телефону'
+                        }
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
+                      placeholder="+380"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      {...register('email', { 
+                        required: 'Email обов\'язковий',
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: 'Введіть коректний email'
+                        }
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
+                      placeholder="example@email.com"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      Адреса *
+                    </label>
+                    <textarea
+                      {...register('address', { required: 'Адреса обов\'язкова' })}
+                      rows={3}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 [&:-webkit-autofill]:bg-gray-700 [&:-webkit-autofill]:text-white' 
+                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      }`}
+                      placeholder="Введіть повну адресу"
+                      style={{
+                        WebkitTextFillColor: darkMode ? '#ffffff' : '#111827',
+                        WebkitBoxShadow: darkMode ? '0 0 0 1000px #374151 inset' : 'none'
+                      }}
+                    />
+                    {errors.address && (
+                      <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-6 border-t border-secondary-200">
-              <button
+            <div className="flex justify-between pt-6">
+              <motion.button
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`px-6 py-3 border rounded-lg transition-colors ${
+                  currentStep === 1
+                    ? `${darkMode ? 'border-gray-700 text-gray-500' : 'border-gray-300 text-gray-400'} cursor-not-allowed`
+                    : `${darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`
+                }`}
               >
                 Назад
-              </button>
+              </motion.button>
               
               {currentStep < steps.length ? (
-                <button
+                <motion.button
                   type="button"
                   onClick={nextStep}
-                  disabled={!isValid}
-                  className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center space-x-2"
                 >
-                  Далі
-                  <ArrowRight size={20} className="ml-2" />
-                </button>
+                  <span>Далі</span>
+                  <ArrowRight size={20} />
+                </motion.button>
               ) : (
-                <button
+                <motion.button
                   type="submit"
-                  disabled={!isValid}
-                  className="btn-success disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center space-x-2"
                 >
-                  Подати заявку
-                  <FileText size={20} className="ml-2" />
-                </button>
+                  <span>Відправити заявку</span>
+                  <FileText size={20} />
+                </motion.button>
               )}
             </div>
           </form>

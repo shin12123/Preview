@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { toast } from 'react-hot-toast'
 import { 
   Send, 
@@ -14,7 +15,7 @@ import {
   HelpCircle
 } from 'lucide-react'
 
-const ChatSupport = () => {
+const ChatSupport = ({ darkMode }) => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -82,25 +83,11 @@ const ChatSupport = () => {
     setMessages(initialMessages)
   }, [])
 
-  // Отключен автоматический скролл
-  // useEffect(() => {
-  //   if (messages.length > initialMessages.length) {
-  //     scrollToBottom()
-  //   }
-  // }, [messages])
-
-  // const scrollToBottom = () => {
-  //   // Небольшая задержка для плавного скролла
-  //   setTimeout(() => {
-  //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  //   }, 100)
-  // }
-
   const handleSendMessage = () => {
     if (!newMessage.trim()) return
 
     const userMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       text: newMessage,
       sender: 'user',
       timestamp: new Date(),
@@ -113,48 +100,47 @@ const ChatSupport = () => {
 
     // Симуляция ответа поддержки
     setTimeout(() => {
+      const supportResponse = getSupportResponse(newMessage)
       const supportMessage = {
-        id: messages.length + 2,
-        text: getSupportResponse(newMessage),
+        id: Date.now() + 1,
+        text: supportResponse,
         sender: 'support',
         timestamp: new Date(),
         avatar: '👨‍💼'
       }
       setMessages(prev => [...prev, supportMessage])
       setIsTyping(false)
-    }, 2000)
+    }, 1500)
   }
 
   const getSupportResponse = (message) => {
     const lowerMessage = message.toLowerCase()
     
     if (lowerMessage.includes('реструктуризація') || lowerMessage.includes('реструктуризация')) {
-      return 'Реструктуризація - це процес зміни умов погашення заборгованості, який дозволяє розбити великий борг на менші частини та погашати його протягом більш тривалого періоду. Це допомагає уникнути судових процесів та зробити погашення боргу більш доступним.'
+      return 'Реструктуризація боргу - це процес зміни умов погашення заборгованості. Ми допомагаємо зменшити щомісячні платежі та розтягнути термін погашення на більш комфортний період.'
     }
     
     if (lowerMessage.includes('заявка') || lowerMessage.includes('заявку')) {
-      return 'Для подачі заявки на реструктуризацію вам потрібно заповнити форму на нашому сайті. Вона включає вибір комунального підприємства, особисті дані, інформацію про борг та контактні дані. Після подачі заявки ми автоматично створимо договір реструктуризації.'
+      return 'Для подачі заявки перейдіть на сторінку "Подати заявку" та заповніть форму. Вам потрібно буде вказати особисті дані, суму боргу та контактну інформацію.'
     }
     
     if (lowerMessage.includes('договір') || lowerMessage.includes('договор')) {
-      return 'Договір реструктуризації генерується автоматично на основі ваших даних. Він містить всі умови реструктуризації, суму боргу, щомісячний платіж та термін погашення. Договір можна підписати електронно за допомогою BankID або Дія.Підпис.'
+      return 'Після схвалення заявки ми підготуємо договір реструктуризації. Ви зможете ознайомитися з ним у особистому кабінеті та завантажити для підписання.'
     }
     
-    if (lowerMessage.includes('платіж') || lowerMessage.includes('платеж') || lowerMessage.includes('гроші')) {
-      return 'Щомісячний платіж розраховується шляхом ділення суми боргу на термін погашення. Наприклад, якщо борг 12000 грн на 12 місяців, то щомісячний платіж буде 1000 грн. Платежі можна здійснювати через банк, пошту або онлайн.'
+    if (lowerMessage.includes('платіж') || lowerMessage.includes('платеж')) {
+      return 'Після підписання договору ви будете здійснювати платежі згідно з новим графіком. Сума щомісячного платежу буде меншою, ніж раніше.'
     }
     
-    if (lowerMessage.includes('термін') || lowerMessage.includes('срок')) {
-      return 'Термін реструктуризації зазвичай становить від 6 до 36 місяців, залежно від суми боргу та ваших можливостей. Ви можете обрати термін, який вам зручний, але він не може перевищувати 36 місяців.'
-    }
-    
-    return 'Дякую за ваше повідомлення! Я передам ваше питання спеціалісту, який зв\'яжеться з вами найближчим часом. Також ви можете зателефонувати нам за номером +380 44 123 45 67 або написати на email info@mirna-ugoda.ua'
+    return 'Дякую за ваше повідомлення! Наш спеціаліст детально вивчить ваше питання та надасть відповідь найближчим часом. Якщо питання термінове, можете зателефонувати нам за номером +380 44 123 45 67.'
   }
 
   const handleTopicSelect = (topicId) => {
     setSelectedTopic(topicId)
-    const topicMessage = `Мені потрібна допомога з темою: ${topics.find(t => t.id === topicId)?.title}`
-    setNewMessage(topicMessage)
+    const topic = topics.find(t => t.id === topicId)
+    if (topic) {
+      toast.success(`Обрано тему: ${topic.title}`)
+    }
   }
 
   const formatTime = (date) => {
@@ -165,128 +151,159 @@ const ChatSupport = () => {
   }
 
   return (
-    <div className="min-h-screen py-12">
+    <div className={`min-h-screen py-12 transition-colors duration-300 ${
+      darkMode ? 'bg-gray-900' : 'bg-gray-50'
+    }`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 ${
+            darkMode ? 'bg-primary-900' : 'bg-primary-100'
+          }`}>
+            <MessageCircle className="w-8 h-8 text-primary-600" />
+          </div>
+          <h1 className={`text-4xl font-bold mb-4 ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}>
             Підтримка
           </h1>
-          <p className="text-lg text-secondary-600">
+          <p className={`text-lg ${
+            darkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
             Отримайте допомогу від наших спеціалістів
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Topics Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <div className={`p-6 rounded-2xl shadow-soft ${
+              darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+            }`}>
+              <h2 className={`text-xl font-semibold mb-6 ${
+                darkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Теми звернень
+              </h2>
+              <div className="space-y-3">
+                {topics.map((topic) => (
+                  <button
+                    key={topic.id}
+                    onClick={() => handleTopicSelect(topic.id)}
+                    className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
+                      selectedTopic === topic.id
+                        ? `${darkMode ? 'bg-primary-900/20 border-primary-700' : 'bg-primary-50 border-primary-200'} border`
+                        : `${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-lg ${
+                        darkMode ? 'bg-gray-700' : 'bg-gray-100'
+                      }`}>
+                        <topic.icon className={`w-5 h-5 ${
+                          darkMode ? 'text-primary-400' : 'text-primary-600'
+                        }`} />
+                      </div>
+                      <div>
+                        <h3 className={`font-medium ${
+                          darkMode ? 'text-white' : 'text-gray-900'
+                        }`}>
+                          {topic.title}
+                        </h3>
+                        <p className={`text-sm ${
+                          darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                          {topic.description}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
               {/* Contact Info */}
-              <div className="card">
-                <h3 className="text-lg font-semibold text-secondary-900 mb-4 flex items-center">
-                  <Phone size={20} className="mr-2 text-primary-600" />
+              <div className={`mt-8 p-4 rounded-xl ${
+                darkMode ? 'bg-gray-700/50' : 'bg-gray-50'
+              }`}>
+                <h3 className={`font-semibold mb-3 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>
                   Контакти
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <Phone size={16} className="text-secondary-400" />
-                    <span className="text-sm">+380 44 123 45 67</span>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Phone className={`w-4 h-4 ${
+                      darkMode ? 'text-primary-400' : 'text-primary-600'
+                    }`} />
+                    <span className={`${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      +380 44 123 45 67
+                    </span>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <Mail size={16} className="text-secondary-400" />
-                    <span className="text-sm">info@mirna-ugoda.ua</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Clock size={16} className="text-secondary-400" />
-                    <span className="text-sm">Пн-Пт: 9:00-18:00</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Topics */}
-              <div className="card">
-                <h3 className="text-lg font-semibold text-secondary-900 mb-4">
-                  Популярні теми
-                </h3>
-                <div className="space-y-3">
-                  {topics.map((topic) => {
-                    const Icon = topic.icon
-                    return (
-                      <button
-                        key={topic.id}
-                        onClick={() => handleTopicSelect(topic.id)}
-                        className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
-                          selectedTopic === topic.id
-                            ? 'border-primary-300 bg-primary-50'
-                            : 'border-secondary-200 hover:border-primary-300 hover:bg-primary-50'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <Icon size={20} className="text-primary-600" />
-                          <div>
-                            <p className="font-medium text-secondary-900">{topic.title}</p>
-                            <p className="text-xs text-secondary-500">{topic.description}</p>
-                          </div>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* FAQ */}
-              <div className="card">
-                <h3 className="text-lg font-semibold text-secondary-900 mb-4">
-                  Часті питання
-                </h3>
-                <div className="space-y-3">
-                  <div className="text-sm">
-                    <p className="font-medium text-secondary-900 mb-1">
-                      Які документи потрібні для реструктуризації?
-                    </p>
-                    <p className="text-secondary-600">
-                      Паспорт, довідка про доходи, документи про борг.
-                    </p>
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-medium text-secondary-900 mb-1">
-                      Скільки часу розглядається заявка?
-                    </p>
-                    <p className="text-secondary-600">
-                      Зазвичай 3-5 робочих днів.
-                    </p>
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-medium text-secondary-900 mb-1">
-                      Чи можна змінити термін погашення?
-                    </p>
-                    <p className="text-secondary-600">
-                      Так, можна подати нову заявку на зміну умов.
-                    </p>
+                  <div className="flex items-center space-x-2">
+                    <Mail className={`w-4 h-4 ${
+                      darkMode ? 'text-primary-400' : 'text-primary-600'
+                    }`} />
+                    <span className={`${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      support@mirna-ugoda.ua
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Chat Area */}
-          <div className="lg:col-span-2">
-            <div className="card h-[600px] flex flex-col">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="lg:col-span-2"
+          >
+            <div className={`h-[600px] rounded-2xl shadow-soft flex flex-col ${
+              darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+            }`}>
               {/* Chat Header */}
-              <div className="border-b border-secondary-200 p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-                      <MessageCircle size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-secondary-900">Онлайн підтримка</h3>
-                      <p className="text-sm text-secondary-500">Відповідаємо протягом 2 хвилин</p>
-                    </div>
+              <div className={`p-4 border-b ${
+                darkMode ? 'border-gray-700' : 'border-gray-200'
+              }`}>
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    darkMode ? 'bg-primary-900' : 'bg-primary-100'
+                  }`}>
+                    <User className={`w-5 h-5 ${
+                      darkMode ? 'text-primary-400' : 'text-primary-600'
+                    }`} />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-success-600 rounded-full"></div>
-                    <span className="text-sm text-success-600">Онлайн</span>
+                  <div>
+                    <h3 className={`font-semibold ${
+                      darkMode ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      Спеціаліст підтримки
+                    </h3>
+                    <div className="flex items-center space-x-2">
+                      <div className={`w-2 h-2 rounded-full ${
+                        darkMode ? 'bg-green-400' : 'bg-green-500'
+                      }`}></div>
+                      <span className={`text-sm ${
+                        darkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
+                        Онлайн
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -294,54 +311,84 @@ const ChatSupport = () => {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((message) => (
-                  <div
+                  <motion.div
                     key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
                     className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
-                      message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                    <div className={`max-w-xs lg:max-w-md ${
+                      message.sender === 'user' ? 'order-2' : 'order-1'
                     }`}>
-                      <div className="w-8 h-8 rounded-full bg-secondary-200 flex items-center justify-center text-sm">
-                        {message.avatar}
-                      </div>
-                      <div className={`rounded-lg px-4 py-2 ${
-                        message.sender === 'user'
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-secondary-100 text-secondary-900'
+                      <div className={`flex items-end space-x-2 ${
+                        message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
                       }`}>
-                        <p className="text-sm">{message.text}</p>
-                        <p className={`text-xs mt-1 ${
-                          message.sender === 'user' ? 'text-primary-100' : 'text-secondary-500'
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                          message.sender === 'user' 
+                            ? (darkMode ? 'bg-primary-600' : 'bg-primary-500')
+                            : (darkMode ? 'bg-gray-600' : 'bg-gray-500')
                         }`}>
-                          {formatTime(message.timestamp)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="flex items-end space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-secondary-200 flex items-center justify-center text-sm">
-                        👨‍💼
-                      </div>
-                      <div className="bg-secondary-100 rounded-lg px-4 py-2">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-secondary-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-secondary-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-secondary-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          {message.avatar}
+                        </div>
+                        <div className={`px-4 py-2 rounded-2xl ${
+                          message.sender === 'user'
+                            ? `${darkMode ? 'bg-primary-600 text-white' : 'bg-primary-500 text-white'}`
+                            : `${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'}`
+                        }`}>
+                          <p className="text-sm">{message.text}</p>
+                          <p className={`text-xs mt-1 ${
+                            message.sender === 'user'
+                              ? 'text-primary-100'
+                              : darkMode ? 'text-gray-400' : 'text-gray-500'
+                          }`}>
+                            {formatTime(message.timestamp)}
+                          </p>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
+                ))}
+
+                {/* Typing Indicator */}
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex justify-start"
+                  >
+                    <div className="max-w-xs lg:max-w-md">
+                      <div className="flex items-end space-x-2">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          darkMode ? 'bg-gray-600' : 'bg-gray-500'
+                        }`}>
+                          👨‍💼
+                        </div>
+                        <div className={`px-4 py-2 rounded-2xl ${
+                          darkMode ? 'bg-gray-700' : 'bg-gray-100'
+                        }`}>
+                          <div className="flex space-x-1">
+                            <div className={`w-2 h-2 rounded-full animate-bounce ${
+                              darkMode ? 'bg-gray-400' : 'bg-gray-500'
+                            }`}></div>
+                            <div className={`w-2 h-2 rounded-full animate-bounce ${
+                              darkMode ? 'bg-gray-400' : 'bg-gray-500'
+                            }`} style={{ animationDelay: '0.1s' }}></div>
+                            <div className={`w-2 h-2 rounded-full animate-bounce ${
+                              darkMode ? 'bg-gray-400' : 'bg-gray-500'
+                            }`} style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                 )}
-                
-                {/* Убран автоматический скролл */}
               </div>
 
               {/* Message Input */}
-              <div className="border-t border-secondary-200 p-4">
+              <div className={`p-4 border-t ${
+                darkMode ? 'border-gray-700' : 'border-gray-200'
+              }`}>
                 <div className="flex space-x-3">
                   <input
                     type="text"
@@ -349,23 +396,23 @@ const ChatSupport = () => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Введіть ваше повідомлення..."
-                    className="input-field flex-1"
-                    disabled={isTyping}
+                    className={`flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                      darkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                   />
                   <button
                     onClick={handleSendMessage}
-                    disabled={!newMessage.trim() || isTyping}
-                    className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!newMessage.trim()}
+                    className="bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white p-3 rounded-lg transition-colors"
                   >
-                    <Send size={20} />
+                    <Send className="w-5 h-5" />
                   </button>
                 </div>
-                <p className="text-xs text-secondary-500 mt-2">
-                  Натисніть Enter для відправки повідомлення
-                </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
