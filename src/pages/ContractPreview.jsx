@@ -110,7 +110,7 @@ const ContractPreview = ({ darkMode }) => {
               </p>
             </div>
             
-            <div className={`p-4 rounded-lg ${
+            <div className={`p-4 rounded-lg max-w-xs sm:max-w-sm md:max-w-md break-words overflow-hidden ${
               darkMode ? 'bg-primary-900/20 border border-primary-700' : 'bg-primary-50 border border-primary-200'
             }`}>
               <p className={`text-sm ${
@@ -118,9 +118,9 @@ const ContractPreview = ({ darkMode }) => {
               }`}>
                 Номер договору
               </p>
-              <p className={`font-bold ${
+              <p className={`font-bold truncate text-base sm:text-lg md:text-xl ${
                 darkMode ? 'text-primary-200' : 'text-primary-800'
-              }`}>
+              }`} style={{wordBreak: 'break-all'}}>
                 {contractData.contractNumber}
               </p>
             </div>
