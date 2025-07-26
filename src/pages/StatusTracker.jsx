@@ -159,13 +159,13 @@ const StatusTracker = ({ darkMode }) => {
             }`}>
               Номер заявки
             </label>
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
               <input
                 type="text"
                 value={searchNumber}
                 onChange={(e) => setSearchNumber(e.target.value)}
                 placeholder="APP-2025-001"
-                className={`flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
                   darkMode 
                     ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
                     : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
@@ -174,7 +174,7 @@ const StatusTracker = ({ darkMode }) => {
               <button
                 onClick={handleSearch}
                 disabled={isSearching}
-                className="bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
+                className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 {isSearching ? (
                   <RefreshCw className="w-5 h-5 animate-spin" />
