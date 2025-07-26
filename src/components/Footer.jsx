@@ -6,6 +6,7 @@ import {
   Heart
 } from 'lucide-react'
 import { scrollToTop } from '../hooks/useScrollToTop'
+import logo from '../../logo.png'
 
 const Footer = ({ darkMode }) => {
   const currentYear = new Date().getFullYear()
@@ -46,9 +47,11 @@ const Footer = ({ darkMode }) => {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">М</span>
-              </div>
+              <img 
+                src={logo}
+                alt="Логотип Мирна Угода"
+                className="w-10 h-10 rounded-lg object-cover bg-white shadow"
+              />
               <div>
                 <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   Мирна Угода

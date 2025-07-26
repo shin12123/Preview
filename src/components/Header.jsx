@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Moon, Sun, Menu, X, Search, Bell, User, ChevronDown, Settings, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
+import logo from '../../logo.png'
 
 const Header = ({ darkMode, setDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -157,13 +158,13 @@ const Header = ({ darkMode, setDarkMode }) => {
             transition={{ duration: 0.2 }}
           >
             <Link to="/" onClick={handleNavigation} className="flex items-center space-x-2">
-              <motion.div 
-                className="w-10 h-10 bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg flex items-center justify-center"
+              <motion.img 
+                src={logo}
+                alt="Логотип Мирна Угода"
+                className="w-10 h-10 rounded-lg object-cover bg-white shadow"
                 whileHover={{ rotate: 5 }}
                 transition={{ duration: 0.2 }}
-              >
-                <span className="text-white font-bold text-lg">М</span>
-              </motion.div>
+              />
               <div className="hidden sm:block">
                 <h1 className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   Мирна Угода
